@@ -133,6 +133,7 @@ while(scalar(@giList) > 0) {
 	}
     } else {
 	print STDERR "Error in taxa query\n";
+	print $taxResponse, "\n";
 	die;
     }
     if($verbose) {
