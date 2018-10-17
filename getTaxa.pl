@@ -44,8 +44,6 @@ my $gi2tax = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi?dbfrom=nu
 my $taxQuery = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=taxonomy&retmode=xml&id=";
 my @classesToGet;
 my @giList;
-#my %gi2TaxHash;
-#my %taxaHash; 
 my $counter = 1;
 
 ##############################
@@ -73,11 +71,7 @@ while(scalar(@giList) > 0) {
     my %taxaHash; 
 
     my @gisToQuery;
-#    if(scalar(@giList) > $queryNum) {
-	@gisToQuery = splice @giList, 0, $queryNum;
-#    } else {
-#	@gisToQuery = splice @giList, 0, scalar(@giList);
-#    }
+    @gisToQuery = splice @giList, 0, $queryNum;
 
     if($verbose) {
 	my $oldCounter = $counter; 
@@ -133,7 +127,6 @@ while(scalar(@giList) > 0) {
 		for my $rank (@classesToGet) {
 		    if($rank eq $taxaXML->{Taxon}[$i]{LineageEx}{Taxon}[$j]{Rank}) {
 			$taxaHash{$taxId}{$rank} = $taxaXML->{Taxon}[$i]{LineageEx}{Taxon}[$j]{ScientificName};
-			#$taxaHash{$taxId}{ $taxaXML->{Taxon}[$i]{LineageEx}{Taxon}[$j]{Rank} } = $taxaXML->{Taxon}[$i]{LineageEx}{Taxon}[$j]{ScientificName};
 		    }
 		}
 	    }
@@ -174,11 +167,11 @@ exit;
 
 Summary:    
     
-    xxxxxx.pl - generates a consensus for a specified gene in a specified taxa
+    getTaxa.pl - get taxonomy information for provided GIs
     
 Usage:
 
-    perl xxxxxx.pl [options] 
+    perl getTaxa.pl [options] giList.txt 
 
 
 =head OPTIONS
@@ -187,5 +180,8 @@ Options:
 
     --verbose
     --help
+    --input
+    --ranks
+    --queryNum
 
 =cut
