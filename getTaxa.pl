@@ -105,6 +105,7 @@ while(scalar(@giList) > 0) {
 	}
     } else {
 	print STDERR "Error in gi2tax id query\n";
+	print STDERR join("\n", @gisToQuery), "\n";
 	die;
     }
 
