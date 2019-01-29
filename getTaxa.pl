@@ -174,7 +174,7 @@ Summary:
     
 Usage:
 
-    perl getTaxa.pl [options] giList.txt 
+    perl getTaxa.pl [options] --input giList.txt 
 
 
 =head OPTIONS
@@ -184,7 +184,11 @@ Options:
     --verbose
     --help
     --input
+       Single column of gis
     --ranks
+       List of ranks, separated by commas, all in a single quote
+             for example: --ranks "superkingdom, kingdom, phylum, class, order, family, genus"
     --queryNum
+       Number of gis to query at once. Probably don't need to change this
 
 =cut
