@@ -40,7 +40,7 @@ pod2usage(1) && exit if ($help);
 ##############################
 # Global variables
 ##############################
-my $gi2tax = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi?dbfrom=nuccore&db=taxonomy&id=";
+my $gi2tax = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi?dbfrom=nuccore&db=taxonomy&idtype=acc&id=";
 my $taxQuery = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=taxonomy&retmode=xml&id=";
 my @classesToGet;
 my @giList;
@@ -105,7 +105,8 @@ while(scalar(@giList) > 0) {
 	}
     } else {
 	print STDERR "Error in gi2tax id query\n";
-	print STDERR join("\n", @gisToQuery), "\n";
+	print STDERR $gi2taxSearch, "\n";
+	print STDERR Dumper($gi2taxResponse), "\n";
 	die;
     }
 
