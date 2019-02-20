@@ -21,16 +21,20 @@ use Data::Dumper;
 
 my $verbose;
 my $help;
-my $input;
+my $gis;
+my $taxids;
 my $ranks = "kingdom, phylum, class, order, family, genus";
-my $queryNum = 100; 
+my $queryNum = 100;
+my $debug;
 
 # i = integer, s = string
 GetOptions ("verbose"           => \$verbose,
             "help"              => \$help,
-            "input=s"		=> \$input,
+            "gis=s"		=> \$gis,
+	    "taxids=s"          => \$taxids,
 	    "ranks=s"           => \$ranks,
-	    "queryNum=i"        => \$queryNum
+	    "queryNum=i"        => \$queryNum,
+	    "debug"             => \$debug
       )
  or pod2usage(0) && exit;
 
@@ -44,6 +48,10 @@ my $gi2tax = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi?dbfrom=nu
 my $taxQuery = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=taxonomy&retmode=xml&id=";
 my @classesToGet;
 my @giList;
+my @taxidList;
+my %taxidHash;
+my %gi2TaxHash;
+my %taxaHash;
 my $counter = 1;
 
 ##############################
@@ -58,36 +66,47 @@ $ranks =~ s/\s//g;
 $ranks = lc($ranks);
 @classesToGet = split(",", $ranks);
 
-print "gi\tspecies\t", join "\t", @classesToGet, "\n";
-
-open INPUT1FILE, "$input" or die "Could not open input\nWell, crap\n";
-while (my $gi = <INPUT1FILE>){
-    chomp $gi;
-    push @giList, $gi;
+if($gis) {
+    open my $giFH, "$gis" or die "Could not open gis input\nWell, crap\n";
+    while (my $gi = <$giFH>){
+	chomp $gi;
+	push @giList, $gi;
+    }
+    print "gi\tspecies\t", join "\t", @classesToGet, "\n";
+} elsif($taxids) {
+    open my $taxaFH, "$taxids" or die "Could not open taxid input\nWell, crap\n";
+    while (my $taxa = <$taxaFH>){
+	chomp $taxa;
+	push @taxidList, $taxa;
+    }    
+    print "taxid\tspecies\t", join "\t", @classesToGet, "\n";
+} else {
+    print STDERR "Must provide input to either --gis or --taxids\n\n";
+    die;
 }
     
 while(scalar(@giList) > 0) {
-    my %gi2TaxHash;
-    my %taxaHash; 
-
     my @gisToQuery;
     @gisToQuery = splice @giList, 0, $queryNum;
 
     if($verbose) {
 	my $oldCounter = $counter; 
         $counter += scalar(@gisToQuery);
-        print STDERR "Finding taxa for gis#", $oldCounter, "through ", $counter, "\n";
+        print STDERR "Finding taxids for gis#", $oldCounter, "through ", $counter - 1, "\n";
     }
 
     if($verbose) {
 	print STDERR "Submitting gi to taxid query to NCBI\n";
     }
+
     my $gi2taxSearch = "GET \"" . $gi2tax . join("&id=", @gisToQuery) . "\"";
     my $gi2taxResponse = `$gi2taxSearch`;
+    print STDERR $gi2taxSearch, "\n", if($debug);
+    print STDERR $gi2taxResponse, "\n", if($debug);
     if($verbose) {
 	print STDERR "Query retrieved\nParsing\n";
     }
-    my @taxQuery; 
+
     if($gi2taxResponse !~ /ERROR/) {
 	my $giXML = XMLin($gi2taxResponse, forceArray => ['LinkSet', 'Link']);
 	for(my $i = 0; $i < scalar(@{ $giXML->{LinkSet} }); $i++) {
@@ -98,7 +117,7 @@ while(scalar(@giList) > 0) {
 	        # in the future to output all taxa info for each gi.
 	    if(defined($taxId)) {
 		$gi2TaxHash{$giNum} = $taxId;
-		push @taxQuery, $taxId;
+		$taxidHash{$taxId} = 1;
 	    } else {
 		print STDERR "Gi# ", $giNum, " has no available taxonomy\n";
 	    }
@@ -109,14 +128,43 @@ while(scalar(@giList) > 0) {
 	print STDERR Dumper($gi2taxResponse), "\n";
 	die;
     }
+}
+
+if($verbose) {
+    print STDERR "Getting taxa info using taxids\n";
+}
+
+# Reset counter
+$counter = 1;
+
+# make @taxidList if gis were provided
+if($gis) {
+    @taxidList = keys(%taxidHash);
+}
+
+# Get taxonomy info using @taxidList
+while(scalar(@taxidList) > 0) {
+    print STDERR "\@taxidList contents: ", join("\t", @taxidList), "\n", if($debug);
+
+    my @taxidsToQuery;
+    @taxidsToQuery = splice @taxidList, 0, $queryNum;
+
+    if($verbose) {
+	my $oldCounter = $counter; 
+        $counter += scalar(@taxidsToQuery);
+        print STDERR "Finding taxonomy for taxids#", $oldCounter, "through ", $counter - 1, "\n";
+    }
 
     if($verbose) {
 	print STDERR "Submitting taxonomy query to NCBI\n";
     }
-    my $taxSearch = "GET \"" . $taxQuery . join("&id=", @taxQuery) . "\"";
+
+    my $taxSearch = "GET \"" . $taxQuery . join("&id=", @taxidsToQuery) . "\"";
+
     if($verbose) {
 	print STDERR "Query retrieved\nParsing\n";
     }
+
     my $taxResponse = `$taxSearch`;
     if($taxResponse !~ /ERROR/) {
 	my $taxaXML = XMLin($taxResponse, forceArray => ['Taxon']);
@@ -138,9 +186,16 @@ while(scalar(@giList) > 0) {
 	print $taxResponse, "\n";
 	die;
     }
-    if($verbose) {
-	print STDERR "Printing results\n";
-    }
+
+}
+
+
+if($verbose) {
+    print STDERR "Printing results\n";
+}
+
+
+if($gis) {
     for my $giNum (keys %gi2TaxHash) {
 	my $taxId = $gi2TaxHash{$giNum};
 	if(exists($taxaHash{$taxId})) {
@@ -155,6 +210,19 @@ while(scalar(@giList) > 0) {
 	    }
 	    print "\n";
 	}
+    }
+} else {
+    for my $taxId (keys %taxaHash) {
+	print $taxId;
+	print "\t", $taxaHash{$taxId}{species};
+	for my $rank (@classesToGet) {
+	    if(exists($taxaHash{$taxId}{$rank})) {
+		print "\t", $taxaHash{$taxId}{$rank};
+	    } else {
+		print "\tNA";
+	    }
+	}
+	print "\n";
     }
 }
 
