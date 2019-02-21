@@ -1,0 +1,146 @@
+taxid	species	kingdom	phylum	class	order	family	genus	
+1150860	Duck flavivirus TA	NA	NA	NA	NA	Flaviviridae	Flavivirus
+1534468	Torres virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+64306	Batu Cave virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+431665	Chimeric dengue virus type 1 vector p4(delta)30-D1-ME	NA	NA	NA	NA	NA	NA
+7739	Branchiostoma floridae	Metazoa	Chordata	NA	NA	Branchiostomidae	Branchiostoma
+1963247	Menghai flavivirus	NA	NA	NA	NA	Flaviviridae	NA
+11079	Murray Valley encephalitis virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+9601	Pongo abelii	Metazoa	Chordata	Mammalia	Primates	Hominidae	Pongo
+284999	Dengue virus type 3 vector p3	NA	NA	NA	NA	NA	NA
+1086585	Flavivirus CJD05/CHN/2010	NA	NA	NA	NA	Flaviviridae	Flavivirus
+1429999	Cloning vector pTBEV-32.11 ic	NA	NA	NA	NA	NA	NA
+1120765	Flavivirus muscovy/SD/China/2011	NA	NA	NA	NA	Flaviviridae	Flavivirus
+11077	Kunjin virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+649187	Lammi virus	NA	NA	NA	NA	Flaviviridae	NA
+44024	Kokobera virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+64286	Usutu virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+1879016	Zika virus vector pZIKV-ICD	NA	NA	NA	NA	NA	NA
+64319	Yaounde virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+99158	Hammondia hammondi	NA	Apicomplexa	Conoidasida	Eucoccidiorida	Sarcocystidae	Hammondia
+577122	T'Ho virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+1969399	Haslams Creek virus	NA	NA	NA	NA	Flaviviridae	NA
+34305	Lotus japonicus	Viridiplantae	Streptophyta	NA	Fabales	Fabaceae	Lotus
+598675	West Nile virus strain PT6.39	NA	NA	NA	NA	Flaviviridae	Flavivirus
+11053	Dengue virus 1	NA	NA	NA	NA	Flaviviridae	Flavivirus
+172148	Alkhumra hemorrhagic fever virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+1691889	Spanish goat encephalitis virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+9244	Calypte anna	Metazoa	Chordata	Aves	Apodiformes	Trochilidae	Calypte
+406269	West Nile virus strain PTRoxo	NA	NA	NA	NA	Flaviviridae	Flavivirus
+1070859	Duck hemorrhagic ovaritis virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+218849	Kamiti River virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+1002900	Baiyangdian virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+390845	Aedes flavivirus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+631267	Chaoyang virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+164416	Wesselsbron virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+598672	West Nile virus strain PT6.16	NA	NA	NA	NA	Flaviviridae	Flavivirus
+227155	Chimeric Dengue virus vector p4-D2-ME	NA	NA	NA	NA	NA	NA
+449279	West Nile virus SA381/00	NA	NA	NA	NA	Flaviviridae	Flavivirus
+1534467	Bainyik virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+285000	Dengue virus type 3 vector p3(delta30)	NA	NA	NA	NA	NA	NA
+28526	Solanum pennellii	Viridiplantae	Streptophyta	NA	Solanales	Solanaceae	Solanum
+227157	Chimeric Dengue virus vector p4-D2-CME	NA	NA	NA	NA	NA	NA
+8128	Oreochromis niloticus	Metazoa	Chordata	Actinopteri	Cichliformes	Cichlidae	Oreochromis
+64307	Gadgets Gully virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+1969400	Mac Peak virus	NA	NA	NA	NA	Flaviviridae	NA
+64292	Ntaya virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+64305	Cacipacore virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+9606	Homo sapiens	Metazoa	Chordata	Mammalia	Primates	Hominidae	Homo
+64320	Zika virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+667516	Nakiwogo virus	NA	NA	NA	NA	Flaviviridae	NA
+1150116	Viral vector pWNV-backbone	NA	NA	NA	NA	NA	NA
+9598	Pan troglodytes	Metazoa	Chordata	Mammalia	Primates	Hominidae	Pan
+41408	Spanish sheep encephalitis virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+7962	Cyprinus carpio	Metazoa	Chordata	Actinopteri	Cypriniformes	Cyprinidae	Cyprinus
+11086	Louping ill virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+246753	Dengue virus vector p4(Delta30)	NA	NA	NA	NA	NA	NA
+64295	Bouboui virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+431666	Chimeric dengue virus type 1 vector p4(delta)30-D1L-CME	NA	NA	NA	NA	NA	NA
+431668	Chimeric dengue virus type 1 vector p4-D1L-CME	NA	NA	NA	NA	NA	NA
+64304	Bussuquara virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+673515	Mosquito flavivirus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+1399582	Duck Tembusu virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+1105173	Marisma mosquito virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+64314	Potiskum virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+307044	West Nile virus strain 385-99	NA	NA	NA	NA	Flaviviridae	Flavivirus
+941340	Flavivirus Anopheles/PV-Am/ITA/2009	NA	NA	NA	NA	Flaviviridae	Flavivirus
+44027	Stratford virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+10090	Mus musculus	Metazoa	Chordata	Mammalia	Rodentia	Muridae	Mus
+64283	Entebbe bat virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+4081	Solanum lycopersicum	Viridiplantae	Streptophyta	NA	Solanales	Solanaceae	Solanum
+1445557	Ilomantsi virus	NA	NA	NA	NA	Flaviviridae	NA
+202946	Apteryx australis mantelli	Metazoa	Chordata	Aves	Apterygiformes	Apterygidae	Apteryx
+284998	Chimeric dengue virus vector p4(delta30)-D3L-ME	NA	NA	NA	NA	NA	NA
+1903340	Anopheles flavivirus variant 1	NA	NA	NA	NA	Flaviviridae	NA
+44026	Sepik virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+985683	Donggang virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+1903341	Anopheles flavivirus variant 2	NA	NA	NA	NA	Flaviviridae	NA
+12637	Dengue virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+227158	Chimeric Dengue virus vector p4(Delta30)-D2-CME	NA	NA	NA	NA	NA	NA
+4006	Linum usitatissimum	Viridiplantae	Streptophyta	NA	Malpighiales	Linaceae	Linum
+64280	Apoi virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+1048536	Culex theileri flavivirus RP-2011	NA	NA	NA	NA	Flaviviridae	Flavivirus
+64285	Rio Bravo virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+11082	West Nile virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+32630	synthetic construct	NA	NA	NA	NA	NA	NA
+64293	Tembusu virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+64290	Bagaza virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+941339	Flavivirus Aedes/MO-Ac/ITA/2009	NA	NA	NA	NA	Flaviviridae	Flavivirus
+64313	Naranjal virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+11072	Japanese encephalitis virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+64294	Yokose virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+1207926	Duck egg-drop syndrome virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+11080	Saint Louis encephalitis virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+598673	West Nile virus strain PT5.2	NA	NA	NA	NA	Flaviviridae	Flavivirus
+59563	Ilheus virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+2045185	Long Pine Key virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+64287	Karshi virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+1890418	Anopheles hyrcanus flavivirus	NA	NA	NA	NA	Flaviviridae	NA
+1231621	Flavivirus White Kaiya duck/WR/China/2010	NA	NA	NA	NA	Flaviviridae	Flavivirus
+11069	Dengue virus 3	NA	NA	NA	NA	Flaviviridae	Flavivirus
+227156	Chimeric Dengue virus vector p4(Delta30)-D2-ME	NA	NA	NA	NA	NA	NA
+93923	Sitiawan virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+1098914	Layer flavivirus CJD05	NA	NA	NA	NA	Flaviviridae	Flavivirus
+11089	Yellow fever virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+1653304	Fitzroy River virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+1456752	Kama virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+431667	Chimeric dengue virus type 1 vector p4-D1-ME	NA	NA	NA	NA	NA	NA
+504472	Spirosoma linguale DSM 74	NA	Bacteroidetes	Cytophagia	Cytophagales	Cytophagaceae	Spirosoma
+40012	Saumarez Reef virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+64296	Edge Hill virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+5854	Plasmodium reichenowi	NA	Apicomplexa	Aconoidasida	Haemosporida	Plasmodiidae	Plasmodium
+1244563	Culex theileri flavivirus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+44025	Koutango virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+1105033	Duck flavivirus KPS54A61/THA	NA	NA	NA	NA	Flaviviridae	Flavivirus
+38837	Banzi virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+11083	Powassan virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+283795	Dengue virus type 4 vector p4	NA	NA	NA	NA	NA	NA
+449277	West Nile virus SA93/01	NA	NA	NA	NA	Flaviviridae	Flavivirus
+11094	Negishi virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+10036	Mesocricetus auratus	Metazoa	Chordata	Mammalia	Rodentia	Cricetidae	Mesocricetus
+11070	Dengue virus 4	NA	NA	NA	NA	Flaviviridae	Flavivirus
+638787	Chimeric Tick-borne encephalitis virus/Dengue virus 4	NA	NA	NA	NA	Flaviviridae	Flavivirus
+598674	West Nile virus strain PT6.5	NA	NA	NA	NA	Flaviviridae	Flavivirus
+64291	Israel turkey meningoencephalomyelitis virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+284997	Chimeric dengue virus vector p4-D3L-ME	NA	NA	NA	NA	NA	NA
+72004	Bos mutus	Metazoa	Chordata	Mammalia	NA	Bovidae	Bos
+64308	Iguape virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+1566298	Paraiso Escondido virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+478577	Barkedji virus	NA	NA	NA	NA	Flaviviridae	NA
+64297	Uganda S virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+40004	Tyuleniy virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+643132	Quang Binh virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+11060	Dengue virus 2	NA	NA	NA	NA	Flaviviridae	Flavivirus
+11084	Tick-borne encephalitis virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+57078	Dicrocoelium dendriticum	Metazoa	Platyhelminthes	Trematoda	Plagiorchiida	Dicrocoeliidae	Dicrocoelium
+1150115	Viral vector pWNV-GFP backbone V3	NA	NA	NA	NA	NA	NA
+390844	Culex flavivirus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+637853	Gongylonema pulchrum	Metazoa	Nematoda	Chromadorea	Rhabditida	Gongylonematidae	Gongylonema
+64312	Montana myotis leukoencephalitis virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+64284	Saboya virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+3694	Populus trichocarpa	Viridiplantae	Streptophyta	NA	Malpighiales	Salicaceae	Populus
+5681	Leishmania peruviana	NA	NA	NA	Kinetoplastida	Trypanosomatidae	Leishmania
+64310	Kadam virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+102107	Prunus mume	Viridiplantae	Streptophyta	NA	Rosales	Rosaceae	Prunus
+2045186	Kampung Karu virus	NA	NA	NA	NA	Flaviviridae	Flavivirus
+35279	Meaban virus	NA	NA	NA	NA	Flaviviridae	Flavivirus

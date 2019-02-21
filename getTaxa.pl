@@ -251,8 +251,10 @@ Options:
 
     --verbose
     --help
-    --input
+    --gis
        Single column of gis
+    --taxids
+       Single column of taxids
     --ranks
        List of ranks, separated by commas, all in a single quote
              for example: --ranks "superkingdom, kingdom, phylum, class, order, family, genus"
