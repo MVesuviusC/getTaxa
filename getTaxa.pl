@@ -26,6 +26,11 @@ my $taxids;
 my $ranks = "kingdom, phylum, class, order, family, genus";
 my $queryNum = 100;
 my $debug;
+my $apiKey;
+
+###############################################################################
+###  Edit out my api key before I push this to github 
+################################################################################
 
 # i = integer, s = string
 GetOptions ("verbose"           => \$verbose,
@@ -34,6 +39,7 @@ GetOptions ("verbose"           => \$verbose,
 	    "taxids=s"          => \$taxids,
 	    "ranks=s"           => \$ranks,
 	    "queryNum=i"        => \$queryNum,
+	    "apiKey=s"          => \$apiKey,
 	    "debug"             => \$debug
       )
  or pod2usage(0) && exit;
@@ -44,7 +50,7 @@ pod2usage(1) && exit if ($help);
 ##############################
 # Global variables
 ##############################
-my $gi2tax = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi?dbfrom=nuccore&db=taxonomy&idtype=acc&id=";
+my $gi2tax = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi?dbfrom=nuccore&db=taxonomy&id="; #type=acc&id="; # need to add option to provide accession numbers and then direct eutils to return accession numbers
 my $taxQuery = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=taxonomy&retmode=xml&id=";
 my @classesToGet;
 my @giList;
@@ -58,10 +64,19 @@ my $counter = 1;
 # Code
 ##############################
 
+##############################
+### Add api_key if provided
+if($apiKey) {
+    my $fromRegex = '&id=';
+    my $toRegex = '&api_key=' . $apiKey . '&id=';
+    $gi2tax =~ s/$fromRegex/$toRegex/;
+    $taxQuery =~  s/$fromRegex/$toRegex/;
+    #print STDERR $gi2tax, "\n", $taxQuery, "\n";
+}
 
 ##############################
-### Stuff
-### More stuff
+### Convert gi to taxid
+
 $ranks =~ s/\s//g;
 $ranks = lc($ranks);
 @classesToGet = split(",", $ranks);
@@ -101,13 +116,13 @@ while(scalar(@giList) > 0) {
 
     my $gi2taxSearch = "GET \"" . $gi2tax . join("&id=", @gisToQuery) . "\"";
     my $gi2taxResponse = `$gi2taxSearch`;
-    print STDERR $gi2taxSearch, "\n", if($debug);
+    print STDERR "gi2taxSearch: ", $gi2taxSearch, "\n", if($debug);
     print STDERR $gi2taxResponse, "\n", if($debug);
     if($verbose) {
 	print STDERR "Query retrieved\nParsing\n";
     }
 
-    if($gi2taxResponse !~ /ERROR/) {
+    if($gi2taxResponse !~ /ERROR/) { # need to check for excessive query errors needing api key
 	my $giXML = XMLin($gi2taxResponse, forceArray => ['LinkSet', 'Link']);
 	for(my $i = 0; $i < scalar(@{ $giXML->{LinkSet} }); $i++) {
 	    my $giNum = $giXML->{LinkSet}[$i]{IdList}{Id};
@@ -161,6 +176,8 @@ while(scalar(@taxidList) > 0) {
 
     my $taxSearch = "GET \"" . $taxQuery . join("&id=", @taxidsToQuery) . "\"";
 
+    print STDERR "taxSearch contents: ", $taxSearch, "\n", if ($debug);
+
     if($verbose) {
 	print STDERR "Query retrieved\nParsing\n";
     }
@@ -168,7 +185,7 @@ while(scalar(@taxidList) > 0) {
     my $taxResponse = `$taxSearch`;
     if($taxResponse !~ /ERROR/) {
 	my $taxaXML = XMLin($taxResponse, forceArray => ['Taxon']);
-	#print Dumper($taxaXML); 
+	print Dumper($taxaXML), if ($debug); 
 	#die;
 	for(my $i = 0; $i < scalar(@{ $taxaXML->{Taxon} }); $i++) {
 	    my $taxId = $taxaXML->{Taxon}[$i]{TaxId};
