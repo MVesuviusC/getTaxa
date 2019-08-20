@@ -23,12 +23,14 @@ my $verbose;
 my $quiet;
 my $help;
 my $taxids;
+my $dbName = "taxonomy.db";
 
 # i = integer, s = string
 GetOptions ("verbose"           => \$verbose,
 	    "quiet"             => \$quiet,
             "help"              => \$help,
-	    "taxids=s"          => \$taxids
+	    "taxids=s"          => \$taxids,
+	    "dbName=s"          => \$dbName
       )
  or pod2usage(0) && exit;
 
@@ -47,9 +49,7 @@ pod2usage(1) && exit if ($help);
 
 ##############################
 ### Open link to database and create query
-my $outDir = "taxaDb/";
-my $dbName = "taxonomy.db";
-my $dsn      = "dbi:SQLite:dbname=$outDir" . "$dbName";
+my $dsn      = "dbi:SQLite:dbname=$dbName";
 my $user     = "";
 my $password = "";
 my $dbh = DBI->connect($dsn, $user, $password, {
