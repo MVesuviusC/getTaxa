@@ -64,6 +64,9 @@ my $sth = $dbh->prepare($query);
 ### Loop through taxids and get taxonomy data
 
 open my $taxidFH, "$taxids" or die "Could not open taxid input\nWell, crap\n";
+
+print "taxid\tspecies\tsuperkingdom\tkingdom\tphylum\tclass\torder\tfamily\tgenus\ttax_name\n";
+
 while (my $taxid = <$taxidFH>){
     chomp $taxid;
     ##### Put in some sort of check here to make sure the query looks like taxid
