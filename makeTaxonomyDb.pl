@@ -73,13 +73,23 @@ if($verbose) {
 
 my $url = 'ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/new_taxdump/new_taxdump.tar.gz';
 my $file = 'new_taxdump.tar.gz';
-getstore($url, $outDir . $file);
+my $returnCode =  getstore($url, $outDir . $file);
+
+#my $wgetCmd = "wget " . $url . " -O " . $outDir . $file;
+#system("$wgetCmd");
+
+if(is_error($returnCode)) {
+    print "Download from NCBI failed with code: ", $returnCode, "\n"; 
+    die;
+}
+
 
 if($verbose) {
     print STDERR "Extracting new_taxdump.tar.gz in $outDir\n";
 }
 
-my $tarCmd = "tar -zxvf --overwrite" . $outDir . $file . " -C " . $outDir;
+my $tarCmd = "tar --overwrite -zxvf " . $outDir . $file . " -C " . $outDir;
+print STDERR $tarCmd, "\n"; #die;
 system("$tarCmd");
 
 if($verbose) {
@@ -197,6 +207,10 @@ while (my $input = <$inputFile>){
 }
 
 $dbh->disconnect;
+
+if($verbose) {
+    print STDERR "Done!                               \n ";
+}
 
 ##############################
 # POD

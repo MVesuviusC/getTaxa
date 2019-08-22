@@ -9,15 +9,14 @@ use DBI;
 ##############################
 # By Matt Cannon
 # Date: 6-27-19
-# Last modified: 6-27-19
+# Last modified: 8-22-19
 # Title: getTaxaLocal.pl
-# Purpose: get taxonomy data for taxids
+# Purpose: get taxonomy data for taxids from local database
 ##############################
 
 ##############################
 # Options
 ##############################
-
 
 my $verbose;
 my $quiet;
@@ -41,11 +40,9 @@ pod2usage(1) && exit if ($help);
 # Global variables
 ##############################
 
-
 ##############################
 # Code
 ##############################
-
 
 ##############################
 ### Open link to database and create query
@@ -53,7 +50,7 @@ my $dsn      = "dbi:SQLite:dbname=$dbName";
 my $user     = "";
 my $password = "";
 my $dbh = DBI->connect($dsn, $user, $password, {
-   PrintError       => 0,
+   PrintError       => 1,
    RaiseError       => 1,
    AutoCommit       => 1,
 });
@@ -67,13 +64,13 @@ my $sth = $dbh->prepare($query);
 ### Loop through taxids and get taxonomy data
 
 open my $taxidFH, "$taxids" or die "Could not open taxid input\nWell, crap\n";
-while (my $input = <$taxidFH>){
-    chomp $input;
+while (my $taxid = <$taxidFH>){
+    chomp $taxid;
     ##### Put in some sort of check here to make sure the query looks like taxid
+    
+    $sth->execute($taxid);
 
-    $sth->execute($input);
-
-    my $name;
+    my ($species, $superkingdom, $kingdom, $phylum, $class, $order, $family, $genus, $tax_name);
     while(my $row = $sth->fetchrow_hashref){
         $species      = "$row->{species}";
         $genus        = "$row->{genus}";
@@ -88,10 +85,10 @@ while (my $input = <$taxidFH>){
     if(defined($tax_name)) {
 	print join("\t", $taxid, $species, $superkingdom, $kingdom, $phylum, $class, $order, $family, $genus, $tax_name), "\n";
     } else {
-	print STDERR "taxid ", $input, "not found\n";
+	print STDERR "taxid ", $taxid, " not found\n";
     }
 }
-}
+
 
 $dbh->disconnect;
 
@@ -105,11 +102,11 @@ $dbh->disconnect;
 
 Summary:
 
-    xxxxxx.pl - 
+    getTaxaLocal.pl - 
 
 Usage:
 
-    perl xxxxxx.pl [options]
+    perl getTaxaLocal.pl [options] --taxids taxidList.txt --dbName taxonomy.db > outputTaxaInfo.txt
 
 
 =head OPTIONS
@@ -118,5 +115,7 @@ Options:
 
     --verbose
     --help
+    --taxids
+    --dbName
 
 =cut
