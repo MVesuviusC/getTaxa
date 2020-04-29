@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+ #!/usr/bin/perl
 use warnings;
 use strict;
 use Getopt::Long;
@@ -23,7 +23,7 @@ use DBI;
 # Write better -help section
 # write out a log file
 # md5 checks?
-
+#Try this to speed it up: https://stackoverflow.com/questions/32101823/perl-many-insert-statments-into-mysql-database
 
 ##############################
 # Options
