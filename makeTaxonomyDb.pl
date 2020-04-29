@@ -52,6 +52,10 @@ pod2usage(1) && exit if ($help);
 ##############################
 my $counter = 1;
 my $numLines;
+my @columnLabels = ("tax_id", "tax_name", "species", "genus", 
+		    "family", "order", "class", "phylum", 
+		    "kingdom", "superkingdom");
+my %storageHash;
 
 ##############################
 # Code
@@ -73,15 +77,15 @@ if($verbose) {
 
 my $url = 'ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/new_taxdump/new_taxdump.tar.gz';
 my $file = 'new_taxdump.tar.gz';
-my $returnCode =  getstore($url, $outDir . $file);
+#my $returnCode =  getstore($url, $outDir . $file);
 
 #my $wgetCmd = "wget " . $url . " -O " . $outDir . $file;
 #system("$wgetCmd");
 
-if(is_error($returnCode)) {
-    print "Download from NCBI failed with code: ", $returnCode, "\n"; 
-    die;
-}
+#if(is_error($returnCode)) {
+#    print "Download from NCBI failed with code: ", $returnCode, "\n"; 
+#    die;
+#}
 
 
 if($verbose) {
@@ -90,7 +94,7 @@ if($verbose) {
 
 my $tarCmd = "tar --overwrite -zxvf " . $outDir . $file . " -C " . $outDir;
 print STDERR $tarCmd, "\n"; #die;
-system("$tarCmd");
+#system("$tarCmd");
 
 if($verbose) {
     print STDERR "Cleaning up unneccessary files in $outDir\n";
@@ -112,7 +116,7 @@ my $cleanupCmd = "rm " .
                 $outDir . "typematerial.dmp " .
                 $outDir . "typeoftype.dmp";
 
-system($cleanupCmd);
+#system($cleanupCmd);
 
 my $numLinesCmd = "wc -l " . $outDir . "rankedlineage.dmp";
 $numLines = `$numLinesCmd`;
@@ -177,34 +181,76 @@ END_SQL
  
 $dbh->do($sql);
 
+
+my $sth = $dbh->prepare('INSERT INTO taxonomy (tax_id, tax_name, species, genus,
+        family, "order", class, phylum, kingdom, superkingdom) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)') or die $dbh->errstr;
+
 ############
 ### Populate database
+
+if($verbose){
+    print STDERR "Begin!\n";
+}
 
 open my $inputFile, $outDir . "rankedlineage.dmp" or die "Could not open rankedlineage.dmp file\nWell, crap\n";
 while (my $input = <$inputFile>){
     chomp $input;
     $input =~ s/\t\|$//;
     my @array = split '\t\|\t', $input, -1;
-
+    
     for(my $i = 0; $i < scalar(@array); $i++) {
         if($array[$i] eq "") {
             $array[$i] = "NA";
+	    push @{ $storageHash{$columnLabels[$i]} }, $array[$i];
         }
     }
 
-    $dbh->do('INSERT INTO taxonomy (tax_id, tax_name, species, genus, 
-        family, "order", class, phylum, kingdom, 
-        superkingdom) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-      undef,
-      @array);
+    #my $sth = $dbh->prepare('INSERT INTO taxonomy (tax_id, tax_name, species, genus, 
+     #   family, "order", class, phylum, kingdom, superkingdom) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+    
+    if(scalar(@{ $storageHash{tax_id} } >= 1000)) {
+	my $tuples = $sth->execute_array(
+	    { ArrayTupleStatus => \my @tuple_status },
+	    \@{ $storageHash{tax_id} },
+	    \@{ $storageHash{tax_name} },
+	    \@{ $storageHash{species} },
+	    \@{ $storageHash{genus} },
+	    \@{ $storageHash{family} },
+	    \@{ $storageHash{order} },
+	    \@{ $storageHash{class} },
+	    \@{ $storageHash{phylum} },
+	    \@{ $storageHash{kingdom} },
+	    \@{ $storageHash{superkingdom} });
+	
+	undef %storageHash;
+    }
+    
     if($verbose){
-        if($counter % 1000 == 0) {
+	if($counter % 1000 == 0) {
             print STDERR $counter, " lines done, which is " , 
-                        100 * ($counter / $numLines), "%                           \r";
+	    100 * ($counter / $numLines), "%                           \r";
         }
         $counter++;
     }
 }
+
+if(scalar(@{ $storageHash{tax_id} } > 0)) {
+        my $tuples = $sth->execute_array(
+            { ArrayTupleStatus => \my @tuple_status },
+            \@{ $storageHash{tax_id} },
+            \@{ $storageHash{tax_name} },
+            \@{ $storageHash{species} },
+            \@{ $storageHash{genus} },
+            \@{ $storageHash{family} },
+            \@{ $storageHash{order} },
+            \@{ $storageHash{class} },
+            \@{ $storageHash{phylum} },
+            \@{ $storageHash{kingdom} },
+            \@{ $storageHash{superkingdom} });
+
+        undef %storageHash;
+}
+
 
 $dbh->disconnect;
 
