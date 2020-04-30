@@ -192,7 +192,7 @@ if($verbose) {
 
 my $entryCount = 99;
 
-my $prepStm = sprintf('INSERT INTO taxonomy (tax_id, tax_name, species, genus, family, "order", class, phylum, kingdom, superkingdom) VALUES %s' . join(",", ('(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)') x $entryCount));
+my $prepStm = 'INSERT INTO taxonomy (tax_id, tax_name, species, genus, family, "order", class, phylum, kingdom, superkingdom) VALUES ' . join(",", ('(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)') x $entryCount);
 
 my $sth = $dbh->prepare($prepStm) or die $dbh->errstr;
 
@@ -241,8 +241,8 @@ while (my $input = <$inputFile>){
 
 # put last entries into database
 if(scalar(@storageArray > 0)) {
-    $prepStm = sprintf('INSERT INTO taxonomy (tax_id, tax_name, species, genus, family, "order", class, phylum, kingdom, superkingdom) VALUES %s' . 
-		       join(",", ('(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)') x (scalar(@storageArray / $columnCount))));
+    $prepStm = 'INSERT INTO taxonomy (tax_id, tax_name, species, genus, family, "order", class, phylum, kingdom, superkingdom) VALUES ' .
+                       join(",", ('(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)') x (scalar(@storageArray / $columnCount)));
 
     $sth = $dbh->prepare($prepStm) or die $dbh->errstr;
 
