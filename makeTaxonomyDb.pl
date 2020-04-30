@@ -1,4 +1,4 @@
- #!/usr/bin/perl
+#!/usr/bin/perl
 use warnings;
 use strict;
 use Getopt::Long;
@@ -8,10 +8,10 @@ use DBI;
 
 ##############################
 # By Matt Cannon
-# Date:
-# Last modified:
-# Title: .pl
-# Purpose:
+# Date: A while ago
+# Last modified: 4-30-20
+# Title: makeTaxonomyDatabase.pl
+# Purpose: make a database of NCBI's taxonomy data
 ##############################
 
 
@@ -23,7 +23,7 @@ use DBI;
 # Write better -help section
 # write out a log file
 # md5 checks?
-#Try this to speed it up: https://stackoverflow.com/questions/32101823/perl-many-insert-statments-into-mysql-database
+# *change the input files I use so I can get the full taxonomy and not just primary levels*
 
 ##############################
 # Options
@@ -55,7 +55,8 @@ my $numLines;
 my @columnLabels = ("tax_id", "tax_name", "species", "genus", 
 		    "family", "order", "class", "phylum", 
 		    "kingdom", "superkingdom");
-my %storageHash;
+my $columnCount = 10;
+my @storageArray = ();
 
 ##############################
 # Code
@@ -70,23 +71,18 @@ if (!-e $outDir and !-d $outDir) {
 ### Stuff
 ### More stuff
 
-
 if($verbose) {
     print STDERR "Downloading new_taxdump.tar.gz from NCBI\n";
 }
 
 my $url = 'ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/new_taxdump/new_taxdump.tar.gz';
 my $file = 'new_taxdump.tar.gz';
-#my $returnCode =  getstore($url, $outDir . $file);
+my $returnCode =  getstore($url, $outDir . $file);
 
-#my $wgetCmd = "wget " . $url . " -O " . $outDir . $file;
-#system("$wgetCmd");
-
-#if(is_error($returnCode)) {
-#    print "Download from NCBI failed with code: ", $returnCode, "\n"; 
-#    die;
-#}
-
+if(is_error($returnCode)) {
+    print "Download from NCBI failed with code: ", $returnCode, "\n"; 
+    die;
+}
 
 if($verbose) {
     print STDERR "Extracting new_taxdump.tar.gz in $outDir\n";
@@ -94,7 +90,7 @@ if($verbose) {
 
 my $tarCmd = "tar --overwrite -zxvf " . $outDir . $file . " -C " . $outDir;
 print STDERR $tarCmd, "\n"; #die;
-#system("$tarCmd");
+system("$tarCmd");
 
 if($verbose) {
     print STDERR "Cleaning up unneccessary files in $outDir\n";
@@ -116,7 +112,7 @@ my $cleanupCmd = "rm " .
                 $outDir . "typematerial.dmp " .
                 $outDir . "typeoftype.dmp";
 
-#system($cleanupCmd);
+system($cleanupCmd);
 
 my $numLinesCmd = "wc -l " . $outDir . "rankedlineage.dmp";
 $numLines = `$numLinesCmd`;
@@ -152,17 +148,26 @@ if($verbose) {
 
 if (-e $outDir . $dbName) {
     system('rm', $outDir . $dbName);
+    print STDERR "Removing old database version\n";
 }
 
 my $dsn      = "dbi:SQLite:dbname=$outDir" . "$dbName";
 my $user     = "";
 my $password = "";
+
+if($verbose) {
+    print STDERR "Connecting to database\n";
+}
+
 my $dbh = DBI->connect($dsn, $user, $password, {
    PrintError       => 0,
    RaiseError       => 1,
    AutoCommit       => 1,
 });
 
+if($verbose) {
+    print STDERR "Defining database structure\n";
+}
 
 my $sql = <<'END_SQL';
 CREATE TABLE taxonomy (
@@ -181,9 +186,15 @@ END_SQL
  
 $dbh->do($sql);
 
+if($verbose) {
+    print STDERR "Preparing input statement\n";
+}
 
-my $sth = $dbh->prepare('INSERT INTO taxonomy (tax_id, tax_name, species, genus,
-        family, "order", class, phylum, kingdom, superkingdom) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)') or die $dbh->errstr;
+my $entryCount = 99;
+
+my $prepStm = sprintf('INSERT INTO taxonomy (tax_id, tax_name, species, genus, family, "order", class, phylum, kingdom, superkingdom) VALUES %s' . join(",", ('(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)') x $entryCount));
+
+my $sth = $dbh->prepare($prepStm) or die $dbh->errstr;
 
 ############
 ### Populate database
@@ -195,38 +206,32 @@ if($verbose){
 open my $inputFile, $outDir . "rankedlineage.dmp" or die "Could not open rankedlineage.dmp file\nWell, crap\n";
 while (my $input = <$inputFile>){
     chomp $input;
+
+    # cut off terminal \t| from end of each line
     $input =~ s/\t\|$//;
+
+    # columns are delimited by \t|\t 
     my @array = split '\t\|\t', $input, -1;
     
+    # put data into storageArray to be added to database later
+    # Also put NA into empty fields
     for(my $i = 0; $i < scalar(@array); $i++) {
         if($array[$i] eq "") {
             $array[$i] = "NA";
-	    push @{ $storageHash{$columnLabels[$i]} }, $array[$i];
         }
+	push @storageArray, $array[$i];
     }
 
-    #my $sth = $dbh->prepare('INSERT INTO taxonomy (tax_id, tax_name, species, genus, 
-     #   family, "order", class, phylum, kingdom, superkingdom) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-    
-    if(scalar(@{ $storageHash{tax_id} } >= 1000)) {
-	my $tuples = $sth->execute_array(
-	    { ArrayTupleStatus => \my @tuple_status },
-	    \@{ $storageHash{tax_id} },
-	    \@{ $storageHash{tax_name} },
-	    \@{ $storageHash{species} },
-	    \@{ $storageHash{genus} },
-	    \@{ $storageHash{family} },
-	    \@{ $storageHash{order} },
-	    \@{ $storageHash{class} },
-	    \@{ $storageHash{phylum} },
-	    \@{ $storageHash{kingdom} },
-	    \@{ $storageHash{superkingdom} });
-	
-	undef %storageHash;
+    # once enough entries are in the array, put them into the database all at once
+    if(scalar(@storageArray) == $entryCount * $columnCount) {
+	$sth->execute(@storageArray);
+
+	# empty out storageArray
+	@storageArray = ();
     }
     
     if($verbose){
-	if($counter % 1000 == 0) {
+	if($counter % 10000 == 0) {
             print STDERR $counter, " lines done, which is " , 
 	    100 * ($counter / $numLines), "%                           \r";
         }
@@ -234,23 +239,15 @@ while (my $input = <$inputFile>){
     }
 }
 
-if(scalar(@{ $storageHash{tax_id} } > 0)) {
-        my $tuples = $sth->execute_array(
-            { ArrayTupleStatus => \my @tuple_status },
-            \@{ $storageHash{tax_id} },
-            \@{ $storageHash{tax_name} },
-            \@{ $storageHash{species} },
-            \@{ $storageHash{genus} },
-            \@{ $storageHash{family} },
-            \@{ $storageHash{order} },
-            \@{ $storageHash{class} },
-            \@{ $storageHash{phylum} },
-            \@{ $storageHash{kingdom} },
-            \@{ $storageHash{superkingdom} });
+# put last entries into database
+if(scalar(@storageArray > 0)) {
+    $prepStm = sprintf('INSERT INTO taxonomy (tax_id, tax_name, species, genus, family, "order", class, phylum, kingdom, superkingdom) VALUES %s' . 
+		       join(",", ('(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)') x (scalar(@storageArray / $columnCount))));
 
-        undef %storageHash;
+    $sth = $dbh->prepare($prepStm) or die $dbh->errstr;
+
+    $sth->execute(@storageArray);
 }
-
 
 $dbh->disconnect;
 
@@ -268,11 +265,11 @@ if($verbose) {
 
 Summary:    
    
-    makeTaxonomyDb.pl - 
+    makeTaxonomyDb.pl - makes a database from NCBI's taxonomy data
    
 Usage:
 
-    perl makeTaxonomyDb.pl [options]
+    perl makeTaxonomyDb.pl [options] --outDir [\.] --databaseName [taxonomy.db]
 
 
 =head OPTIONS
@@ -281,5 +278,7 @@ Options:
 
     --verbose
     --help
+    --outDir - directory to store database and intermediate files in
+    --databaseName - name of database file 
 
 =cut
