@@ -75,7 +75,7 @@ if($verbose) {
     print STDERR "Downloading new_taxdump.tar.gz from NCBI\n";
 }
 
-my $url = 'ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/new_taxdump/new_taxdump.tar.gz';
+my $url = 'https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/new_taxdump/new_taxdump.tar.gz';
 my $file = 'new_taxdump.tar.gz';
 my $returnCode =  getstore($url, $outDir . $file);
 
