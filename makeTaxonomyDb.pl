@@ -92,28 +92,6 @@ my $tarCmd = "tar --overwrite -zxvf " . $outDir . $file . " -C " . $outDir;
 print STDERR $tarCmd, "\n"; #die;
 system("$tarCmd");
 
-if($verbose) {
-    print STDERR "Cleaning up unneccessary files in $outDir\n";
-}
-
-# get rid of the files I don't need to save space
-my $cleanupCmd = "rm " .
-                $outDir . "citations.dmp " .
-                $outDir . "delnodes.dmp " .
-                $outDir . "division.dmp " .
-                $outDir . "fullnamelineage.dmp " .
-                $outDir . "gencode.dmp " .
-                $outDir . "host.dmp " .
-                $outDir . "merged.dmp " .
-                $outDir . "names.dmp " .
-                $outDir . "new_taxdump.tar.gz " .
-                $outDir . "nodes.dmp " .
-                $outDir . "taxidlineage.dmp " .
-                $outDir . "typematerial.dmp " .
-                $outDir . "typeoftype.dmp";
-
-system($cleanupCmd);
-
 my $numLinesCmd = "wc -l " . $outDir . "rankedlineage.dmp";
 $numLines = `$numLinesCmd`;
 $numLines =~ s/ .+//;
@@ -250,6 +228,29 @@ if(scalar(@storageArray > 0)) {
 }
 
 $dbh->disconnect;
+
+if($verbose) {
+    print STDERR "Cleaning up unneccessary files in $outDir\n";
+}
+
+# get rid of the unneccesary files to save space
+my $cleanupCmd = "rm " .
+    $outDir . "citations.dmp " .
+    $outDir . "delnodes.dmp " .
+    $outDir . "division.dmp " .
+    $outDir . "fullnamelineage.dmp " .
+    $outDir . "gencode.dmp " .
+    $outDir . "host.dmp " .
+    $outDir . "merged.dmp " .
+    $outDir . "names.dmp " .
+    $outDir . "new_taxdump.tar.gz " .
+    $outDir . "nodes.dmp " .
+    $outDir . "taxidlineage.dmp " .
+    $outDir . "typematerial.dmp " .
+    $outDir . "typeoftype.dmp " .
+    $outDir . "rankedlineage.dmp";
+
+system($cleanupCmd);
 
 if($verbose) {
     print STDERR "Done!                               \n ";
