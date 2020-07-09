@@ -25,7 +25,7 @@ perl getTaxa.pl --taxids examples/inputTaxids.txt > examples/taxonomyFromTaxids.
 
 This script downloads the taxdump files from NCBI and makes a sql database that can be accessed by other progams. 
 
-Downloading is fast, making the database is very slow (~1 day) because the file input from is very large.
+Downloading is fast, making the database is slower (~1-2 hrs)
 
 ## Usage
 perl makeTaxonomyDb.pl --outDir outputDirectory --dbName taxonomy.db --verbose
@@ -34,9 +34,15 @@ perl makeTaxonomyDb.pl --outDir outputDirectory --dbName taxonomy.db --verbose
 # getTaxaLocal.pl
 The point of this script is to do essentially the same thing as getTaxa.pl, but locally using the database created by makeTaxonomy.pl.
 
+This script has additional functionality in that it can return a list of taxa that fall within a provided taxonomic group. For instance, given the genus "Plasmodium" the script will return taxa information for all taxa within this genus.
+
 ## Usage
+
+### Get taxonomy info for taxids
 perl getTaxaLocal.pl --taxids examples/inputTaxids.txt --dbName taxonomy.db 
 
+### Get taxonomy info for provided taxonomic group
+perl getTaxaLocal.pl --taxName Plasmodium,genus --dbName taxonomy.db
 
 ## To do:
 Error handling is still a bit tricky. If the gi is unknown the program will error out. In the future I need to implement better handling of this and let the program continue, but output error messages containing bad gis. 

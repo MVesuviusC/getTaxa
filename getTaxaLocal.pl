@@ -22,14 +22,16 @@ my $verbose;
 my $quiet;
 my $help;
 my $taxids;
+my $taxName;
 my $dbName = "taxonomy.db";
 
 # i = integer, s = string
 GetOptions ("verbose"           => \$verbose,
-	    "quiet"             => \$quiet,
+            "quiet"             => \$quiet,
             "help"              => \$help,
-	    "taxids=s"          => \$taxids,
-	    "dbName=s"          => \$dbName
+            "taxids=s"          => \$taxids,
+            "taxName=s"         => \$taxName,
+            "dbName=s"          => \$dbName
       )
  or pod2usage(0) && exit;
 
@@ -39,6 +41,8 @@ pod2usage(1) && exit if ($help);
 ##############################
 # Global variables
 ##############################
+my $sth;
+my $query;
 
 ##############################
 # Code
@@ -55,45 +59,95 @@ my $dbh = DBI->connect($dsn, $user, $password, {
    AutoCommit       => 1,
 });
 
-my $query = 'SELECT species, genus, family, "order",
-                class, phylum, kingdom, superkingdom, tax_name FROM
-                taxonomy WHERE tax_id == ?';
-my $sth = $dbh->prepare($query);
 
 ##############################
-### Loop through taxids and get taxonomy data
+### Loop through taxids and get taxonomy data if taxids provided
 
-open my $taxidFH, "$taxids" or die "Could not open taxid input\nWell, crap\n";
+if($taxids) { # if user provided taxids
+    $query = 'SELECT tax_id, species, genus, family, "order",
+                class, phylum, kingdom, superkingdom, tax_name FROM
+                taxonomy WHERE tax_id == ?';
+    $sth = $dbh->prepare($query);
 
-print "taxid\tspecies\tsuperkingdom\tkingdom\tphylum\tclass\torder\tfamily\tgenus\ttax_name\n";
+    open my $taxidFH, "$taxids" or die "Could not open taxid input\nWell, crap\n";
 
-while (my $taxid = <$taxidFH>){
-    chomp $taxid;
-    ##### Put in some sort of check here to make sure the query looks like taxid
-    
-    $sth->execute($taxid);
+    print "taxid\tspecies\tsuperkingdom\tkingdom\tphylum\tclass\torder\tfamily\tgenus\ttax_name\n";
 
-    my ($species, $superkingdom, $kingdom, $phylum, $class, $order, $family, $genus, $tax_name);
-    while(my $row = $sth->fetchrow_hashref){
-        $species      = "$row->{species}";
-        $genus        = "$row->{genus}";
-        $family       = "$row->{family}";
-        $order        = "$row->{order}";
-        $class        = "$row->{class}";
-        $phylum       = "$row->{phylum}";
-        $kingdom      = "$row->{kingdom}";
-        $superkingdom = "$row->{superkingdom}";
-        $tax_name     = "$row->{tax_name}";
+    while (my $taxid = <$taxidFH>){
+	chomp $taxid;
+	##### Put in some sort of check here to make sure the query looks like taxid
+	
+	my $output = parseSql($taxid);
     }
-    if(defined($tax_name)) {
-	print join("\t", $taxid, $species, $superkingdom, $kingdom, $phylum, $class, $order, $family, $genus, $tax_name), "\n";
+} elsif($taxName) { # if user provided taxonomy information
+    my ($name, $level) = split ",", $taxName;
+    $level = lc($level); # make sure level is all lowercase to match the database
+    
+    if($level eq "") { # make sure input is at least partly right
+	print STDERR "\n--taxName option not correct. It should be in this format: Plasmodium,genus or \"Homo sapiens,species\"\n\n";
+	die;
+    }
+
+    print "taxid\tspecies\tsuperkingdom\tkingdom\tphylum\tclass\torder\tfamily\tgenus\ttax_name\n";
+
+    # lots of entries don't have any annotated species, but the species name is in tax_name >:-[
+    # therefore, I need to check both the species column as well as the tax name column >:-(
+    if($level eq "species") { 
+	$query = 'SELECT tax_id, species, genus, family, "order",
+		    class, phylum, kingdom, superkingdom, tax_name FROM
+		    taxonomy WHERE ' . $level . ' == ? OR tax_name == ?';
+	$sth = $dbh->prepare($query);
+	parseSql($name, $name);
     } else {
-	print STDERR "taxid ", $taxid, " not found\n";
+	$query = 'SELECT tax_id, species, genus, family, "order",
+		    class, phylum, kingdom, superkingdom, tax_name FROM
+		    taxonomy WHERE ' . $level . ' == ?';
+	$sth = $dbh->prepare($query);
+	parseSql($name);
     }
 }
 
-
 $dbh->disconnect;
+
+sub parseSql {
+    my $searchTerm = shift;
+    my $secondSearchTerm = shift; # this is used only for --taxName when level is species
+    if(!defined($secondSearchTerm)) {
+	$sth->execute($searchTerm);
+    } else {
+	$sth->execute($searchTerm, $secondSearchTerm);
+    }
+
+    my $retCount = 0;
+
+    my ($taxid, $species, $superkingdom, $kingdom, $phylum, $class, $order, $family, $genus, $tax_name);
+
+    while(my $row = $sth->fetchrow_hashref){
+	$taxid        = "$row->{tax_id}";
+	$species      = "$row->{species}";
+	$genus        = "$row->{genus}";
+	$family       = "$row->{family}";
+	$order        = "$row->{order}";
+	$class        = "$row->{class}";
+	$phylum       = "$row->{phylum}";
+	$kingdom      = "$row->{kingdom}";
+	$superkingdom = "$row->{superkingdom}";
+	$tax_name     = "$row->{tax_name}";
+	
+	$retCount++;
+	
+	if($species eq "NA") {
+	    print STDERR "Species for \"", $searchTerm, "\", taxid:", $taxid, " is \"NA\". Substituting tax_name.\n" if(!$quiet);
+	    $species = $tax_name;
+	}
+	
+	print join("\t", $taxid, $species, $superkingdom, $kingdom, $phylum, $class, $order, $family, $genus, $tax_name), "\n";
+    }
+    if($retCount == 0) {
+	print STDERR "Query ", $searchTerm, " not found\n" if(!$quiet);
+    }
+}
+
 
 ##############################
 # POD
@@ -110,6 +164,10 @@ Summary:
 Usage:
 
     perl getTaxaLocal.pl [options] --taxids taxidList.txt --dbName taxonomy.db > outputTaxaInfo.txt
+    
+    or
+    
+    perl getTaxaLocal.pl [options] --taxName Plasmodium,genus --dbName taxonomy.db > outputTaxaInfo.txt
 
 
 =head OPTIONS
@@ -119,6 +177,7 @@ Options:
     --verbose
     --help
     --taxids
+    --taxName
     --dbName
 
 =cut
