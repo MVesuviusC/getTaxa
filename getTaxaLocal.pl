@@ -64,8 +64,8 @@ my $dbh = DBI->connect($dsn, $user, $password, {
 ### Loop through taxids and get taxonomy data if taxids provided
 
 if($taxids) { # if user provided taxids
-    $query = 'SELECT tax_id, species, genus, family, "order",
-                class, phylum, kingdom, superkingdom, tax_name FROM
+    $query = 'SELECT tax_id, species_level, genus_level, family_level, order_level,
+                class_level, phylum_level, kingdom_level, superkingdom_level, tax_name FROM
                 taxonomy WHERE tax_id == ?';
     $sth = $dbh->prepare($query);
 
@@ -93,15 +93,15 @@ if($taxids) { # if user provided taxids
     # lots of entries don't have any annotated species, but the species name is in tax_name >:-[
     # therefore, I need to check both the species column as well as the tax name column >:-(
     if($level eq "species") { 
-	$query = 'SELECT tax_id, species, genus, family, "order",
-		    class, phylum, kingdom, superkingdom, tax_name FROM
-		    taxonomy WHERE ' . $level . ' == ? OR tax_name == ?';
+	$query = 'SELECT tax_id, species_level, genus_level, family_level, order_level,
+		    class_level, phylum_level, kingdom_level, superkingdom_level, tax_name FROM
+		    taxonomy WHERE ' . $level . '_level == ? OR tax_name == ?';
 	$sth = $dbh->prepare($query);
 	parseSql($name, $name);
     } else {
-	$query = 'SELECT tax_id, species, genus, family, "order",
-		    class, phylum, kingdom, superkingdom, tax_name FROM
-		    taxonomy WHERE ' . $level . ' == ?';
+	$query = 'SELECT tax_id, species_level, genus_level, family_level, order_level,
+		    class_level, phylum_level, kingdom_level, superkingdom_level, tax_name FROM
+		    taxonomy WHERE ' . $level . '_level == ?';
 	$sth = $dbh->prepare($query);
 	parseSql($name);
     }
@@ -124,14 +124,14 @@ sub parseSql {
 
     while(my $row = $sth->fetchrow_hashref){
 	$taxid        = "$row->{tax_id}";
-	$species      = "$row->{species}";
-	$genus        = "$row->{genus}";
-	$family       = "$row->{family}";
-	$order        = "$row->{order}";
-	$class        = "$row->{class}";
-	$phylum       = "$row->{phylum}";
-	$kingdom      = "$row->{kingdom}";
-	$superkingdom = "$row->{superkingdom}";
+	$species      = "$row->{species_level}";
+	$genus        = "$row->{genus_level}";
+	$family       = "$row->{family_level}";
+	$order        = "$row->{order_level}";
+	$class        = "$row->{class_level}";
+	$phylum       = "$row->{phylum_level}";
+	$kingdom      = "$row->{kingdom_level}";
+	$superkingdom = "$row->{superkingdom_level}";
 	$tax_name     = "$row->{tax_name}";
 	
 	$retCount++;

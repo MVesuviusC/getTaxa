@@ -25,7 +25,7 @@ perl getTaxa.pl --taxids examples/inputTaxids.txt > examples/taxonomyFromTaxids.
 
 This script downloads the taxdump files from NCBI and makes a sql database that can be accessed by other progams. 
 
-Downloading is fast, making the database is slower (~1-2 hrs)
+Downloading is fast, making the database is slower (~1/2 hr)
 
 ## Usage
 perl makeTaxonomyDb.pl --outDir outputDirectory --dbName taxonomy.db --verbose

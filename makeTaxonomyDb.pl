@@ -149,16 +149,16 @@ if($verbose) {
 
 my $sql = <<'END_SQL';
 CREATE TABLE taxonomy (
-  tax_id        VARCHAR(255) PRIMARY KEY,
-  tax_name      VARCHAR(255),
-  species       VARCHAR(255),
-  genus         VARCHAR(255),
-  family        VARCHAR(255),
-  'order'       VARCHAR(255),
-  class         VARCHAR(255),
-  phylum        VARCHAR(255),
-  kingdom       VARCHAR(255),
-  superkingdom  VARCHAR(255)
+  tax_id              VARCHAR(255) PRIMARY KEY,
+  tax_name            VARCHAR(255),
+  species_level       VARCHAR(255),
+  genus_level         VARCHAR(255),
+  family_level        VARCHAR(255),
+  order_level         VARCHAR(255),
+  class_level         VARCHAR(255),
+  phylum_level        VARCHAR(255),
+  kingdom_level       VARCHAR(255),
+  superkingdom_level  VARCHAR(255)
 )
 END_SQL
  
@@ -170,7 +170,7 @@ if($verbose) {
 
 my $entryCount = 99;
 
-my $prepStm = 'INSERT INTO taxonomy (tax_id, tax_name, species, genus, family, "order", class, phylum, kingdom, superkingdom) VALUES ' . join(",", ('(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)') x $entryCount);
+my $prepStm = 'INSERT INTO taxonomy (tax_id, tax_name, species_level, genus_level, family_level, order_level, class_level, phylum_level, kingdom_level, superkingdom_level) VALUES ' . join(",", ('(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)') x $entryCount);
 
 my $sth = $dbh->prepare($prepStm) or die $dbh->errstr;
 
@@ -219,7 +219,7 @@ while (my $input = <$inputFile>){
 
 # put last entries into database
 if(scalar(@storageArray > 0)) {
-    $prepStm = 'INSERT INTO taxonomy (tax_id, tax_name, species, genus, family, "order", class, phylum, kingdom, superkingdom) VALUES ' .
+    $prepStm = 'INSERT INTO taxonomy (tax_id, tax_name, species_level, genus_level, family_level, order_level, class_level, phylum_level, kingdom_level, superkingdom_level) VALUES ' .
                        join(",", ('(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)') x (scalar(@storageArray / $columnCount)));
 
     $sth = $dbh->prepare($prepStm) or die $dbh->errstr;
